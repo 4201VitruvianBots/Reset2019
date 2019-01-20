@@ -13,13 +13,9 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-
-public class FollowTarget extends Command {
-  double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.5; //Default speed multiplier
-  double tta = 0.85; //Target TA val
-  public FollowTarget() {
+public class AlignTarget extends Command {
+  double kP = 0.3; //Proportion for turning
+  public AlignTarget() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
     requires(Robot.limelight);
@@ -29,7 +25,6 @@ public class FollowTarget extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setBrake();
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -37,18 +32,17 @@ public class FollowTarget extends Command {
   protected void execute() {
     if(Robot.limelight.isValidTarget()) {
       double correction = Robot.limelight.getTargetX() * kP;
-      double paddingCorrection = ds*((tta - Robot.limelight.getTA()) * kPB);
-      Robot.driveTrain.setDriveOutput(paddingCorrection + correction, paddingCorrection - correction);
+      Robot.driveTrain.setDriveOutput(correction, -correction);
     }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(Robot.driveTrain.getLeftRPM() <= 0 && Robot.driveTrain.getRightRPM() <= 0){
+    if(Robot.limelight.getTargetX() + 0.2 >= 0 || Robot.limelight.getTargetX() - 0.2 <= 0){
       return true;
     }
-    else {
+    else{
       return false;
     }
   }
@@ -56,7 +50,6 @@ public class FollowTarget extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.setCoast();
     Robot.driveTrain.setDriveOutput(0, 0);
   }
 

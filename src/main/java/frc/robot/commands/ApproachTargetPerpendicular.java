@@ -14,11 +14,10 @@ import frc.robot.Robot;
  * An example command.  You can replace me with your own command.
  */
 public class ApproachTargetPerpendicular extends Command {
-  int notPerpendicular = 3; //Turn twice as much if not within 2 degrees of perpendicular
-  double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.65; //Default speed multiplier
   double tta = 0.65; //Target TA val
+  double originalPercent, originalAngle, initialAngle, targetAngle;
+  double kG = 4; //Reciprocal of guess at how much the TA will have gone between the initial TA and TTA
+  double kPT = 0.1; //Proportion for initial turn
   public ApproachTargetPerpendicular() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
@@ -29,25 +28,27 @@ public class ApproachTargetPerpendicular extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    this.originalPercent = Robot.limelight.getTA();
+    this.originalAngle = Robot.limelight.getSkew();
+    this.targetAngle = Robot.driveTrain.getAngle() + (90 - Robot.limelight.getSkew()) / 2;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    while(Robot.limelight.getSkew() < -2){
-      double difference = Math.abs(Robot.limelight.getSkew()) - Math.abs(Robot.limelight.getTargetX());
-    }
-    if(Robot.limelight.isValidTarget()) {
-      double correction = (Robot.limelight.getTargetX() * kP) * notPerpendicular;
-      double paddingCorrection = (tta - Robot.limelight.getTA()) * kPB;
-      Robot.driveTrain.setDriveOutput(ds*paddingCorrection + correction, ds*paddingCorrection + (-correction));
-    }
+    double correction = (targetAngle - Robot.driveTrain.getAngle()) * kPT;
+    Robot.driveTrain.setDriveOutput(0.5-correction, 0.5+correction);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    if((tta - originalPercent) / kG >= Robot.limelight.getTA() - originalPercent){
+      return true;
+    }
+    else{
+      return false;
+    }
   }
 
   // Called once after isFinished returns true

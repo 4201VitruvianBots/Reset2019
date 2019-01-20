@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * An example subsystem.  You can replace me with your own Subsystem.
@@ -33,6 +34,12 @@ public class Limelight extends Subsystem {
 
   public boolean isValidTarget() {
     return (limelightTable.getEntry("tv").getDouble(0) == 1) ? true : false;
+  }
+
+  public void updateSmartDashboard(){
+    SmartDashboard.putNumber("ts", getSkew());
+    SmartDashboard.putNumber("tx", getTargetX());
+    SmartDashboard.putNumber("ta", getTA());
   }
 
   @Override

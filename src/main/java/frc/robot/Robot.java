@@ -12,13 +12,9 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.DriveStraight;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.SpinInPlaceTime;
-import frc.robot.commands.TurnInPlace;
+import frc.robot.commands.*;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Limelight;
 
 /**
@@ -45,7 +41,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new SpinInPlaceTime(10, 1));
+    m_chooser.setDefaultOption("Default Auto", new AutoFollowTarget(0.65, 0.65));
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }
@@ -61,6 +57,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     Robot.driveTrain.updateSmartDashboard();
+    Robot.limelight.updateSmartDashboard();
   }
 
   /**

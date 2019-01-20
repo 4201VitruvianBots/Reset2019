@@ -9,16 +9,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.robot.Robot;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class AutoTopRocket extends CommandGroup {
-  public AutoTopRocket() {
-    addSequential(new DriveStraight(0.5, 0.5));
-    addSequential(new TurnInPlace(10));
-    addSequential(new AutoFollowTarget(0.5, 1.5, 3.14));
-    //addSequential(new AutoElevator(0.5, 0.5));
+public class PerpendicularFollowTarget extends CommandGroup {
+  public PerpendicularFollowTarget() {
+    addSequential(new AlignTarget());
+    addSequential(new ApproachTargetPerpendicular());
+    //addSequential(new AutoFollowTarget(0.5, 0.95));
   }
 }

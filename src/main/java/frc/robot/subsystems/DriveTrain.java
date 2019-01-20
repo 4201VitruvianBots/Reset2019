@@ -121,6 +121,8 @@ public class DriveTrain extends Subsystem {
     SmartDashboard.putNumber("Right Encoder Count", getRightEncoderCount());
     SmartDashboard.putNumber("Left Distance (in)", getLeftEncoderIN());
     SmartDashboard.putNumber("Right Distance (in)", getRightEncoderIN());
+    SmartDashboard.putNumber("Left RPM", getLeftRPM());
+    SmartDashboard.putNumber("Right RPM", getRightRPM());
   }
 
   public int getLeftEncoderCount(){
@@ -145,10 +147,18 @@ public class DriveTrain extends Subsystem {
     leftRear.setSelectedSensorPosition(0);
   }
 
+  public double getLeftRPM(){
+    return leftRear.getSelectedSensorVelocity();
+  }
+
+  public double getRightRPM(){
+    return rightRear.getSelectedSensorVelocity();
+  }
+
   @Override
   public void initDefaultCommand() {
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
-    setDefaultCommand(new TankDriveVelocity() );
+    setDefaultCommand(new ArcadeDriveYZ());
   }
 }

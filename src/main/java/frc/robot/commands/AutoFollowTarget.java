@@ -21,11 +21,10 @@ public class AutoFollowTarget extends Command {
   double kPB = 0.2;
   double ds;
   double tta;
-  public AutoFollowTarget(double output, double timeout, double targetTA) {
+  public AutoFollowTarget(double output, double targetTA) {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
     requires(Robot.limelight);
-    setTimeout(timeout);
     this.ds = output;
     this.tta = targetTA;
   }
@@ -48,7 +47,7 @@ public class AutoFollowTarget extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if (isTimedOut()) {
+    if (Robot.limelight.getTA() + tta/3 >= tta || Robot.limelight.getTA() - tta/3 <= tta) {
       return true;
     }
     else{
