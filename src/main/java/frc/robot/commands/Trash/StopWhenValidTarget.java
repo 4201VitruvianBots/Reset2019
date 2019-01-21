@@ -14,8 +14,8 @@ import frc.robot.subsystems.*;
 /**
  * Normal Tank Drive, but the robot stops when a target found
  */
-public class DerrickWeirdThing extends Command {
-  public DerrickWeirdThing() {
+public class StopWhenValidTarget extends Command {
+  public StopWhenValidTarget() {
     // Use requires() here to declare subsystem dependencies
     requires(Robot.driveTrain);
     requires(Robot.limelight);
@@ -29,14 +29,13 @@ public class DerrickWeirdThing extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-      Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY(), Robot.m_oi.getRightY());
+    Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY(), Robot.m_oi.getRightY());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
     if(Robot.limelight.isValidTarget()){
-        Robot.driveTrain.setDriveOutput(0,0);
         return true;
     } else {
         return false;
@@ -46,6 +45,7 @@ public class DerrickWeirdThing extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveTrain.setDriveOutput(0,0);
   }
 
   // Called when another command which requires one or more of the same

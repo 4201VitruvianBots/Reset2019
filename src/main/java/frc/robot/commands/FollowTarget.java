@@ -37,7 +37,7 @@ public class FollowTarget extends Command {
   protected void execute() {
     if(Robot.limelight.isValidTarget()) {
       double correction = Robot.limelight.getTargetX() * kP;
-      double paddingCorrection = ds*((tta - Robot.limelight.getTA()) * kPB);
+      double paddingCorrection = ds * (tta - Robot.limelight.getTA()) * kPB;
       Robot.driveTrain.setDriveOutput(paddingCorrection + correction, paddingCorrection - correction);
     }
   }

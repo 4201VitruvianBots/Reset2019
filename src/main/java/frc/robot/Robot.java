@@ -27,7 +27,6 @@ import frc.robot.subsystems.Limelight;
 public class Robot extends TimedRobot {
   public static DriveTrain driveTrain = new DriveTrain();
   public static Elevator elevator = new Elevator();
-  public static RobotMap robotMap = new RobotMap();
   public static Limelight limelight = new Limelight();
   public static OI m_oi;
 
@@ -41,7 +40,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_oi = new OI();
-    m_chooser.setDefaultOption("Default Auto", new AutoFollowTarget(0.65, 0.65));
+    driveTrain.setDriveShiftHigh();
+    m_chooser.setDefaultOption("Default Auto", new AutoFollowTarget(0.5, 0.85));
     // chooser.addOption("My Auto", new MyAutoCommand());
     SmartDashboard.putData("Auto mode", m_chooser);
   }
@@ -88,7 +88,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_chooser.getSelected();
-    driveTrain.setBrake();
 
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",

@@ -23,12 +23,13 @@ public class ArcadeDriveYZ extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.driveTrain.setCoast();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY() + (-Robot.m_oi.getLeftRotation()), Robot.m_oi.getLeftY() + Robot.m_oi.getLeftRotation());
+    Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY() - Robot.m_oi.getLeftRotation(), Robot.m_oi.getLeftY() + Robot.m_oi.getLeftRotation());
   }
   // Make this return true when this Command no longer needs to run execute()
   @Override

@@ -17,6 +17,7 @@ public class ResetEncoders extends Command {
   public ResetEncoders() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
+    requires(Robot.driveTrain);
   }
 
   // Called just before this Command runs the first time
