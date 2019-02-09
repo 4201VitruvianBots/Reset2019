@@ -7,50 +7,52 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 /**
  * An example command.  You can replace me with your own command.
  */
-public class SpinInPlaceTime extends Command {
-  double time, output;
-  Timer stopwatch = new Timer();
-  public SpinInPlaceTime(double time, double output) {
+
+public class FollowTargetTankDrive extends Command {
+  double kP = 0.04; //Proportion for turning
+  double kPB = 1.4; //Proportion for moving
+  double ds = 0.5; //Default speed multiplier
+  double tta = 0.85; //Target TA val
+  public FollowTargetTankDrive() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
+    requires(Robot.limelight);
     requires(Robot.driveTrain);
-    this.time = time;
-    this.output = output;
-    setTimeout(time);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    stopwatch.reset();
-    stopwatch.start();
-    Robot.driveTrain.resetEncoders();
+    Robot.limelight.setPipeline(1);
+    Robot.driveTrain.setBrake();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.driveTrain.setDriveOutput(-output, output);
-    SmartDashboard.putNumber("Stopwatch", stopwatch.get());
+    if(Robot.limelight.isValidTarget()) {
+      double correction = Robot.limelight.getTargetX() * kP;
+      double paddingCorrection = ds * (tta - Robot.limelight.getTA()) * kPB;
+      Robot.driveTrain.setDriveOutput(paddingCorrection + Robot.m_oi.getLeftY(), paddingCorrection + Robot.m_oi.getRightY());
+    }
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return isTimedOut();
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    Robot.driveTrain.setCoast();
     Robot.driveTrain.setDriveOutput(0, 0);
   }
 
