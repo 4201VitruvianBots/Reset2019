@@ -29,6 +29,7 @@ public class FollowTarget extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.limelight.setPipeline(1);
     Robot.driveTrain.setBrake();
   }
 
@@ -45,12 +46,7 @@ public class FollowTarget extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(Robot.driveTrain.getLeftRPM() <= 0 && Robot.driveTrain.getRightRPM() <= 0){
-      return true;
-    }
-    else {
-      return false;
-    }
+    return false;
   }
 
   // Called once after isFinished returns true
