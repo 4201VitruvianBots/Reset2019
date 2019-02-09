@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import frc.robot.commands.FollowTarget;
-import frc.robot.commands.FollowTargetTankDrive;
+import frc.robot.commands.Trash.ResetEncoders;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -56,7 +56,8 @@ public class OI {
         for(int i = 0; i < rightButtons.length; i++)
             rightButtons[i] = new JoystickButton(rightJoystick, i + 1);
 
-        leftButtons[0].whileHeld(new FollowTargetTankDrive());
+        leftButtons[0].whileHeld(new FollowTarget());
+        leftButtons[1].whenPressed(new ResetEncoders());
 
     }
 

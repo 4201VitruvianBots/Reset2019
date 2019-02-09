@@ -27,9 +27,7 @@ public class Limelight extends Subsystem {
   public double getTA(){
      return limelightTable.getEntry("ta").getDouble(0);
   }
-  public void setPipeline(int pipelineIndex) {
-    limelightTable.getEntry("pipeline").setDouble(pipelineIndex);
-  }
+
   public double getSkew(){
     return limelightTable.getEntry("ts").getDouble(0);
   }

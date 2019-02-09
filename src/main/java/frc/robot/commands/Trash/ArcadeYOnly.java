@@ -13,50 +13,33 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-
-public class FollowTarget extends Command {
-  double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.5; //Default speed multiplier
-  double tta = 0.85; //Target TA val
-  public FollowTarget() {
+public class ArcadeYOnly extends Command {
+  public ArcadeYOnly() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
-    requires(Robot.limelight);
     requires(Robot.driveTrain);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setBrake();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(Robot.limelight.isValidTarget()) {
-      double correction = Robot.limelight.getTargetX() * kP;
-      double paddingCorrection = ds * (tta - Robot.limelight.getTA()) * kPB;
-      Robot.driveTrain.setDriveOutput(paddingCorrection + correction, paddingCorrection - correction);
-    }
+    Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY(), Robot.m_oi.getLeftY());
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(Robot.driveTrain.getLeftRPM() <= 0 && Robot.driveTrain.getRightRPM() <= 0){
-      return true;
-    }
-    else {
-      return false;
-    }
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.setCoast();
     Robot.driveTrain.setDriveOutput(0, 0);
   }
 

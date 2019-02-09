@@ -13,42 +13,40 @@ import frc.robot.Robot;
 /**
  * An example command.  You can replace me with your own command.
  */
-
-public class FollowTarget extends Command {
-  double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.5; //Default speed multiplier
-  double tta = 0.85; //Target TA val
-  public FollowTarget() {
+public class ApproachTargetPerpendicular extends Command {
+  double tta = 0.65; //Target TA val
+  double originalPercent, originalAngle, initialAngle, targetAngle;
+  double kG = 4; //Reciprocal of guess at how much the TA will have gone between the initial TA and TTA
+  double kPT = 0.1; //Proportion for initial turn
+  public ApproachTargetPerpendicular() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
-    requires(Robot.limelight);
     requires(Robot.driveTrain);
+    requires(Robot.limelight);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    Robot.driveTrain.setBrake();
+    this.originalPercent = Robot.limelight.getTA();
+    this.originalAngle = Robot.limelight.getSkew();
+    this.targetAngle = Robot.driveTrain.getAngle() + (90 - Robot.limelight.getSkew()) / 2;
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    if(Robot.limelight.isValidTarget()) {
-      double correction = Robot.limelight.getTargetX() * kP;
-      double paddingCorrection = ds * (tta - Robot.limelight.getTA()) * kPB;
-      Robot.driveTrain.setDriveOutput(paddingCorrection + correction, paddingCorrection - correction);
-    }
+    double correction = (targetAngle - Robot.driveTrain.getAngle()) * kPT;
+    Robot.driveTrain.setDriveOutput(0.5-correction, 0.5+correction);
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    if(Robot.driveTrain.getLeftRPM() <= 0 && Robot.driveTrain.getRightRPM() <= 0){
+    if((tta - originalPercent) / kG >= Robot.limelight.getTA() - originalPercent){
       return true;
     }
-    else {
+    else{
       return false;
     }
   }
@@ -56,7 +54,6 @@ public class FollowTarget extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.driveTrain.setCoast();
     Robot.driveTrain.setDriveOutput(0, 0);
   }
 
