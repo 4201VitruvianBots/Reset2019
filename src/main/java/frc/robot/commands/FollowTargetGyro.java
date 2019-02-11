@@ -11,15 +11,16 @@ import edu.wpi.first.wpilibj.command.Command;
 import frc.robot.Robot;
 
 /**
- * An example command.  You can replace me with your own command.
+ * NOTE: This is an EXPERIMENTAL UNTESTED command that WILL NOT STOP THE ROBOT. It is only intended to use the gyro to align and move forward.
  */
 
-public class FollowTargetTankDrive extends Command {
+public class FollowTargetGyro extends Command {
   double kP = 0.04; //Proportion for turning
   double kPB = 1.4; //Proportion for moving
   double ds = 0.5; //Default speed multiplier
   double tta = 0.85; //Target TA val
-  public FollowTargetTankDrive() {
+  double targetAngle;
+  public FollowTargetGyro() {
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
     requires(Robot.limelight);
@@ -31,14 +32,16 @@ public class FollowTargetTankDrive extends Command {
   protected void initialize() {
     Robot.limelight.setPipeline(1);
     Robot.driveTrain.setBrake();
+    Robot.driveTrain.resetAngle();
+    this.targetAngle = Robot.limelight.getTargetX();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     if(Robot.limelight.isValidTarget()) {
-      double correction = Robot.limelight.getTargetX() * kP;
-      Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY() - correction, Robot.m_oi.getRightY() - correction);
+      double correction = Robot.driveTrain.getAngle() * kP;
+      Robot.driveTrain.setDriveOutput(ds + correction, ds - correction);
     }
   }
 

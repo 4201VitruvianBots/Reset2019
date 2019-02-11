@@ -16,8 +16,6 @@ import frc.robot.Robot;
 
 public class FollowTargetArcadeDrive extends Command {
   double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.5; //Default speed multiplier
   double tta = 0.85; //Target TA val
   public FollowTargetArcadeDrive() {
     // Use requires() here to declare subsystem dependencies
@@ -38,8 +36,7 @@ public class FollowTargetArcadeDrive extends Command {
   protected void execute() {
     if(Robot.limelight.isValidTarget()) {
       double correction = Robot.limelight.getTargetX() * kP;
-      double paddingCorrection = ds * (tta - Robot.limelight.getTA()) * kPB;
-      Robot.driveTrain.setDriveOutput(paddingCorrection + (Robot.m_oi.getLeftY() - Robot.m_oi.getRightX()), paddingCorrection + (Robot.m_oi.getLeftY() + Robot.m_oi.getRightX()));
+      Robot.driveTrain.setDriveOutput((Robot.m_oi.getLeftY() - Robot.m_oi.getRightX()) + correction, (Robot.m_oi.getLeftY() + Robot.m_oi.getRightX()) - correction);
     }
   }
 

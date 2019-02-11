@@ -8,18 +8,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.command.PIDCommand;
 import frc.robot.Robot;
 
 /**
  * An example command.  You can replace me with your own command.
  */
 
-public class FollowTargetTankDrive extends Command {
-  double kP = 0.04; //Proportion for turning
-  double kPB = 1.4; //Proportion for moving
-  double ds = 0.5; //Default speed multiplier
+public class FollowTargetArcadeDriveController extends PIDCommand {
+  static double kP = 0.04; //Proportion for turning
+  static double kI = 0; //Proportion for turning
+  static double kD = 0.15; //Proportion for turning
   double tta = 0.85; //Target TA val
-  public FollowTargetTankDrive() {
+
+  public FollowTargetArcadeDriveController() {
+    super(kP, kI, kD);
     // Use requires() here to declare subsystem dependencies
     // requires(Robot.m_subsystem);
     requires(Robot.limelight);
@@ -31,15 +34,20 @@ public class FollowTargetTankDrive extends Command {
   protected void initialize() {
     Robot.limelight.setPipeline(1);
     Robot.driveTrain.setBrake();
+
+    this.getPIDController().setAbsoluteTolerance(1);
+    this.getPIDController().setOutputRange(-1, 1);
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
     if(Robot.limelight.isValidTarget()) {
-      double correction = Robot.limelight.getTargetX() * kP;
-      Robot.driveTrain.setDriveOutput(Robot.m_oi.getLeftY() - correction, Robot.m_oi.getRightY() - correction);
-    }
+      this.getPIDController().enable();
+      //double correction = Robot.limelight.getTargetX() * kP;
+      //Robot.driveTrain.setDriveOutput((Robot.m_oi.getLeftY() - Robot.m_oi.getRightX()) + correction, (Robot.m_oi.getLeftY() + Robot.m_oi.getRightX()) - correction);
+    } else
+      this.getPIDController().disable();
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -52,7 +60,7 @@ public class FollowTargetTankDrive extends Command {
   @Override
   protected void end() {
     Robot.driveTrain.setCoast();
-    Robot.driveTrain.setDriveOutput(0, 0);
+    //Robot.driveTrain.setDriveOutput(0, 0);
   }
 
   // Called when another command which requires one or more of the same
@@ -60,5 +68,15 @@ public class FollowTargetTankDrive extends Command {
   @Override
   protected void interrupted() {
     end();
+  }
+
+  @Override
+  protected double returnPIDInput() {
+    return Robot.limelight.getTargetX();
+  }
+
+  @Override
+  protected void usePIDOutput(double output) {
+      Robot.driveTrain.setDriveOutput((Robot.m_oi.getLeftY() - Robot.m_oi.getRightX()) - output, (Robot.m_oi.getLeftY() + Robot.m_oi.getRightX()) + output);
   }
 }
